@@ -26,6 +26,7 @@ const register = async (req, res) => {
     
   });
 };
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -44,8 +45,23 @@ const login = async (req, res) => {
   user.password = undefined;
   res.status(StatusCodes.OK).json({ user, token });
 };
+
 const updateUser = async (req, res) => {
-  res.send("Update user");
+  if (!req?.body?.id) {
+    return res.status(400).json({ 'message': 'ID parameter is required.' });
+  }
+  const { name, email, lastName } = req.body.changes
+  const switchC = { name, email, lastName}
+  
+  await userModel.findOneAndUpdate({ "_id": req.body.id }, {"$set": switchC}, {new: true}).exec(function(err, user){
+    if (err){
+      console.log(err.message)
+      res.status(500).send(err.message)
+    }else{
+      res.status(200).send(user)
+    }
+  }); 
+  
 };
 
 export { register, login, updateUser };
