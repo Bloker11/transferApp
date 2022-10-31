@@ -53,7 +53,7 @@ const updateUser = async (req, res) => {
   const { name, email, lastName } = req.body.changes
   const switchC = { name, email, lastName}
   
-  await userModel.findOneAndUpdate({ "_id": req.body.id }, {"$set": switchC}, {new: true}).exec(function(err, user){
+  await User.findOneAndUpdate({ "_id": req.body.id }, {"$set": switchC}, {new: true}).exec(function(err, user){
     if (err){
       console.log(err.message)
       res.status(500).send(err.message)
