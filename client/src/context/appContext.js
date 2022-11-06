@@ -28,6 +28,9 @@ export const initialState = {
   showSidebar: false,
 };
 
+axios.defaults.withCredentials = true;
+
+
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const addUserToLocalStorage = ({ user, token }) => {
