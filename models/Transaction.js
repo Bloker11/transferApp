@@ -13,7 +13,7 @@ const TransactionSchema = new mongoose.Schema({
   },
   receiver: {
     type: ObjectID,
-    required: [true, "The receiver is required"],
+    required: false,
     minlength: 3,
     maxlength: 20,
     trim: true,
@@ -30,7 +30,7 @@ const TransactionSchema = new mongoose.Schema({
   },
   trans:{
     type: String,
-    enum: ['deposit', 'withdrawal'],
+    enum: ['deposit', 'withdrawal', 'send', 'receive'],
     required: [ true, 'is it deposit or withdrawal? | send or receive']
   }
   

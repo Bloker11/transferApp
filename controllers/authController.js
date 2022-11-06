@@ -27,6 +27,8 @@ const register = async (req, res) => {
   });
 };
 
+
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -45,6 +47,8 @@ const login = async (req, res) => {
   user.password = undefined;
   res.status(StatusCodes.OK).json({ user, token });
 };
+
+
 
 const updateUser = async (req, res) => {
   if (!req?.body?.id) {
