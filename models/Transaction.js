@@ -6,8 +6,6 @@ const TransactionSchema = new mongoose.Schema({
   sender: {
     type: ObjectID,
     required: [true, "The sender is required"],
-    minlength: 3,
-    maxlength: 20,
     trim: true,
     ref: 'User'
   },

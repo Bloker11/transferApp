@@ -10,11 +10,10 @@ const verifyJWT = (req, res, next) => {
     
     jwt.verify(
         token,
-        process.env.ACCESS_TOKEN_SECRET,
+        process.env.JWT_SECRET,
         (err, decoded) => {
             if (err) return res.sendStatus(403); //forbidden code
-            req.user = decoded.username;
-            req.id = decoded.id;
+            req.user = decoded.userId;
             next();
         }
     );
