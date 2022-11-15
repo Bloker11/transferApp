@@ -111,7 +111,6 @@ const AppProvider = ({ children }) => {
       const response = await axios.patch("/api/v1/auth/updateUser", currentUser);
       console.log(response);
       const {user, token} = response.data;
-      addUserToLocalStorage({user, token})
       dispatch({
         type: UPDATE_USER_SUCCESS,
         payload: { user, token },

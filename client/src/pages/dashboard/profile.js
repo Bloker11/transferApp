@@ -10,6 +10,7 @@ const Profile = () => {
   const [email, setEmail] = useState(user?.email);
   const [lastName, setLastName] = useState(user?.lastName);
   const [wallet, setWallet] = useState(user?.wallet);
+  const [id, setId] = useState(user?._id)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,7 +19,7 @@ const Profile = () => {
       return;
     }
 
-    updateUser({ name, email, lastName, wallet });
+    updateUser({ id, name, email, lastName, wallet });
   };
   return (
     <Wrapper>

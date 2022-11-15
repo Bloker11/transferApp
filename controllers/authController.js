@@ -51,21 +51,28 @@ const login = async (req, res) => {
 
 
 const updateUser = async (req, res) => {
-  const { name, email, lastName, wallet } = req.body;
+  console.log(req.body)
+  const { id, name, email, lastName, wallet } = req.body;
   if (!name || !email || !lastName || !wallet) {
     throw new BadRequestError("Please provide all credentials")
   }
   
-  const switchC = { name, email, lastName, wallet}
+  const switchC = { name, email, lastName, wallet }
   
-  User.findOneAndUpdate({ "_id": req.body.id }, { "$set": switchC }, { new: true }).exec(function (err, user) {
-    if (err) {
-      console.log(err.message);
-      res.status(500).send(err.message);
-    } else {
-      res.status(200).json(user);
-    }
-  }); 
+  const user = await User.findOneAndUpdate({ "_id": id}, { "$set": switchC }, { new: true })
+  // .exec(function (err, user) {
+  //   if (err) {
+  //     console.log(err.message);
+  //     res.status(500).send(err.message);
+  //   } else {
+  //     res.status(200).json({ user });
+  //   }
+  // }); 
+  if(!user){
+    return res.status(500).json({"error":"no such user exists. Change error"})
+  }
+  res.status(200).json({ user });
+
   
 };
 
