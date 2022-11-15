@@ -51,18 +51,19 @@ const login = async (req, res) => {
 
 
 const updateUser = async (req, res) => {
-  if (!req?.body?.id) {
-    return res.status(400).json({ 'message': 'ID parameter is required.' });
+  const { name, email, lastName, wallet } = req.body;
+  if (!name || !email || !lastName || !wallet) {
+    throw new BadRequestError("Please provide all credentials")
   }
-  const { name, email, lastName } = req.body.changes
-  const switchC = { name, email, lastName}
   
-  await User.findOneAndUpdate({ "_id": req.body.id }, {"$set": switchC}, {new: true}).exec(function(err, user){
-    if (err){
-      console.log(err.message)
-      res.status(500).send(err.message)
-    }else{
-      res.status(200).send(user)
+  const switchC = { name, email, lastName, wallet}
+  
+  User.findOneAndUpdate({ "_id": req.body.id }, { "$set": switchC }, { new: true }).exec(function (err, user) {
+    if (err) {
+      console.log(err.message);
+      res.status(500).send(err.message);
+    } else {
+      res.status(200).json(user);
     }
   }); 
   
