@@ -21,7 +21,7 @@ const TransactionSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Transaction amount needed"],
     validate: {
-      validator: (num)=> num>=0,
+      validator: (num)=> num>0,
       message: "Please provide a valid amount. Amount cannot be negative.",
     },
     

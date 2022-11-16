@@ -30,6 +30,8 @@ export const initialState = {
   user: user ? JSON.parse(user) : null,
   token: token,
   showSidebar: false,
+  search: '',
+  transactionType:['send','withdraw','deposit']
 };
 
 axios.defaults.withCredentials = true;

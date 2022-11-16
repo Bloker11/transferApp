@@ -1,9 +1,13 @@
 import React from 'react'
+import { TransactionsComponent, SearchContainer } from '../../components'
 
 const allTransactions = () => {
   return (
-    <div>allTransactions</div>
-  )
+    <>
+      <SearchContainer />
+      <TransactionsComponent />
+    </>
+  );
 }
 
 export default allTransactions

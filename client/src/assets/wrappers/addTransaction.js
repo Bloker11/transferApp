@@ -6,6 +6,7 @@ const Wrapper = styled.section`
   background: var(--white);
   padding: 3rem 2rem 4rem;
   box-shadow: var(--shadow-2);
+  margin-top: 10px;
   h3 {
     margin-top: 0;
   }
