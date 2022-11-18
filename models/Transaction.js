@@ -7,7 +7,7 @@ const TransactionSchema = new mongoose.Schema({
     type: ObjectID,
     required: [true, "The sender is required"],
     trim: true,
-    ref: 'User'
+    ref: 'User1'
   },
   receiver: {
     type: ObjectID,
@@ -15,7 +15,7 @@ const TransactionSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 20,
     trim: true,
-    ref: 'User'
+    ref: 'User1'
   },
   amount: {
     type: Number,
@@ -33,6 +33,12 @@ const TransactionSchema = new mongoose.Schema({
   }
   
 });
+
+TransactionSchema.methods.toJSON = function(){
+  const Transaction = this;
+  const TransactionObject = Transaction.toObject();
+  return TransactionObject;
+}
 
 
 export default mongoose.model("Transaction", TransactionSchema);

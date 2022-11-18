@@ -4,9 +4,9 @@ import Alert from "./Alert";
 import Wrapper from "../assets/wrappers/transactionsContainer";
 import PageBtnContainer from "./PageBtnContainer";
 
-const JobsContainer = () => {
+const TransactionsComponent = () => {
   const {
-    getTrans,
+    // getTrans,
     trans,
     isLoading,
     page,
@@ -19,11 +19,11 @@ const JobsContainer = () => {
     showAlert,
   } = useAppContext();
   useEffect(() => {
-    getTrans();
+    // getTrans();
     // eslint-disable-next-line
   }, [page, search, searchStatus, searchType, sort]);
 
-  if (trans.length === 0) {
+  if (!trans) {
     return (
       <Wrapper>
         <h2>No transactions to display...</h2>
@@ -45,4 +45,4 @@ const JobsContainer = () => {
   );
 };
 
-export default JobsContainer;
+export default TransactionsComponent;
