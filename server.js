@@ -52,7 +52,7 @@ app.use("/api/v1/auth", authRouter);
 app.use(verifyJWT)
 
 //routes to the transactions following verification bit of middleware
-app.use('/trans', transRouter)
+app.use('/api/v1/trans', transRouter)
 
 
 

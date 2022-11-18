@@ -31,7 +31,11 @@ export const initialState = {
   token: token,
   showSidebar: false,
   search: '',
-  transactionType:['send','withdraw','deposit']
+  transactionType:['send','withdraw','deposit'],
+  sortOptions:['latest','oldest','a-z','z-a'],
+  sort:'latest',
+  searchType: 'all',
+  trans:[]
 };
 
 axios.defaults.withCredentials = true;
@@ -124,6 +128,10 @@ const AppProvider = ({ children }) => {
        });
     }
   };
+
+  const getTrans = async ()=>{
+    
+  }
 
   return (
     <AppContext.Provider

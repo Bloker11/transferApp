@@ -19,7 +19,7 @@ const JobsContainer = () => {
     showAlert,
   } = useAppContext();
   useEffect(() => {
-    getTrans();
+    //getTrans();
     // eslint-disable-next-line
   }, [page, search, searchStatus, searchType, sort]);
 
