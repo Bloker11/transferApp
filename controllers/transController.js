@@ -2,9 +2,9 @@ import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
 
 const deposit = async (req, res) => {
-  const { amount, senderId, trans } = req.body;
+  const { difference, senderId, trans } = req.body;
   console.log(req.body);
-  if (!amount) res.status(403).json({ error: "Invalid amount" });
+  if (!difference) res.status(403).json({ error: "Invalid difference" });
   if (!senderId) res.status(403).json({ error: "Who is making the deposit?" });
   if (!trans)
     res
@@ -16,13 +16,13 @@ const deposit = async (req, res) => {
     const daUser = await User.findOne({ _id: senderId });
     if (!daUser)
       res.status(404).json({ error: "the depositor is non-existent?" });
-    console.log(daUser);
-    daUser.wallet += +amount;
+    // console.log(daUser);
+    daUser.wallet += +difference;
     await daUser.save();
 
     const newTrans = await Transaction.create({
       sender: daUser._id,
-      amount,
+      difference,
       trans,
     });
     console.log(newTrans);
@@ -35,24 +35,24 @@ const deposit = async (req, res) => {
 
 const withdraw = async (req, res) => {
   try {
-    const { amount } = req.params;
+    const { difference } = req.params;
     const userId = req.user;
-    if (!amount) {
+    if (!difference) {
       return res
         .status(400)
-        .json({ error: "withdrawal amount must be included" });
+        .json({ error: "withdrawal difference must be included" });
     }
 
     const withdrawal = await Transaction.create({
       sender: userId,
-      amount,
+      difference,
       trans: "withdrawal",
     });
     const user = await User.findOneAndUpdate(
       { _id: userId },
-      { wallet: wallet - amount }
+      { wallet: wallet - difference }
     );
-    user.wallet -= amount;
+    user.wallet -= difference;
     await user.save();
 
     updatedTrans = await Transaction.findOne({ _id: withdrawal._id }).populate(
@@ -68,56 +68,64 @@ const withdraw = async (req, res) => {
 
 const fullSend = async (req, res) => {
   try {
-    //getting receiver amount and userId from request
+    //getting receiver difference and userId from request
     //and ensuring they're there
-    const { receiver, amount } = req.body;
-    if (!amount) {
-      return res.status(400).json({ error: "transaction amount needed" });
+    const { receiver, difference } = req.body;
+    if (!difference) {
+      return res.status(400).json({ error: "transaction difference needed" });
     }
     if (!receiver) {
       return res.status(400).json({ error: "receiver must be included" });
     }
-    const user = req.userId;
+    const userId = req.user;
 
     //getting the sender and receiver from db and updating their wallet
     //balances
-    const receiverDeets = await User.findOne(
-      { email: receiver },
-      { wallet: wallet + amount },
-      {
-        new: true,
-      }
+    const theSender = await User.findOne(
+      { _id: userId }
+      // { wallet:{'$inc': - difference} },
+      // {
+      //   new: true,
+      // }
     );
-    if (!receiverDeets) {
+    
+    theSender.wallet -= +difference
+    await theSender.save()
+
+    const theReceiver = await User.findOneAndUpdate(
+      { email: receiver }
+      // { "wallet": {$inc: difference} },
+      // {
+      //   new: true,
+      // }
+    );
+   
+    theReceiver.wallet += +difference
+    await theReceiver.save()
+      
+    if (!theReceiver) {
       return res
         .status(404)
-        .json({ error: `no such person ${receiver} found` });
+        .json({ error: `check the receiver ${receiver} or the sender. We ran into a problem` });
     }
-    const theSender = await User.findOneAndUpdate(
-      { _id: user },
-      { wallet: wallet - amount },
-      {
-        new: true,
-      }
-    );
     if (!theSender) {
       return res.status(404).json({ error: `sender not found in db` });
     }
 
     //creating entry to transaction db
-    const theTransaction = Transaction.create({
-      sender: user,
-      amount,
-      receiver: receiverDeets._id,
+    const theTransaction = await Transaction.create({
+      sender: userId,
+      amount: difference,
+      receiver: theReceiver._id,
       trans: "send",
     });
 
     //get populated transaction for frontenf
-    let returnTransaction = Transaction.findOne({ _id: theTransaction._id })
+    let returnTransaction = await Transaction.findOne({ _id: theTransaction._id })
       .populate("sender", "email")
       .populate("receiver", "email");
 
-    res.status(201).json(returnTransaction, theSender);
+    res.status(201).json({transaction: returnTransaction, initiator: theSender});
   } catch (e) {
     console.log(e);
   }
