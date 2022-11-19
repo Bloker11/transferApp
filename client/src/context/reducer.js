@@ -12,6 +12,10 @@ import {
   UPDATE_USER_BEGIN,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_ERROR,
+  GET_TRANS_BEGIN,
+  GET_TRANS_SUCCESS,
+  GET_TRANS_ERROR,
+  HANDLE_CHANGE
 } from "./actions";
 import { initialState } from "./appContext";
 
@@ -119,6 +123,27 @@ const reducer = (state, action) => {
    if (action.type === TOGGLE_SIDEBAR) {
      return { ...state, showSidebar: !state.showSidebar };
    }
+   if(action.type === GET_TRANS_BEGIN){
+    return {...state, isLoading:true}
+   }
+   if(action.type === GET_TRANS_SUCCESS){
+    return {
+      ...state,
+      trans: action.payload.transactions,
+      amount: action.payload.amounts,
+      isLoading: false,
+      totalTrans: action.payload.transactions.length,
+      sender: action.payload.names
+    };
+   }
+   if (action.type === HANDLE_CHANGE) {
+     return {
+       ...state,
+       page: 1,
+       [action.payload.name]: action.payload.value,
+     };
+   }
+
 
   throw new Error(`no such action :${action.type}`);
 };

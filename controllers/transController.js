@@ -123,4 +123,25 @@ const fullSend = async (req, res) => {
   }
 };
 
-export { deposit, withdraw, fullSend };
+const getMyTransactions = async(req, res) => {
+  try{  
+    console.log("we've been hit")
+    const { id } = req.params
+    if(!id){
+      return res.status(404).json({ error:"No such user found"})
+    }
+    console.log(id)
+    const myTransactions = await Transaction.find({sender: id}).populate("sender", "name")
+    for(let i=0; i<myTransactions.length; i++){
+      if (Boolean(myTransactions[i].receiver)){
+        trans.populate("receiver", "name")
+      }
+    }
+    res.status(200).json(myTransactions)
+  }catch(e){
+    console.log(e)
+    res.status(500).json({ error: `server error: ${e.code}`})
+  }
+}
+
+export { deposit, withdraw, fullSend, getMyTransactions };

@@ -6,13 +6,13 @@ const SearchContainer = () => {
   const [localSearch, setLocalSearch] = useState("");
   const {
     isLoading,
-    search,
     searchType,
     sort,
     sortOptions,
     handleChange,
     clearFilters,
     transactionType,
+    
   } = useAppContext();
   const handleSearch = (e) => {
     handleChange({ name: e.target.name, value: e.target.value });
