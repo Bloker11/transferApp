@@ -142,7 +142,7 @@ const getMyTransactions = async(req, res) => {
     const myTransactions = await Transaction.find({sender: id}).populate("sender", "name")
     for(let i=0; i<myTransactions.length; i++){
       if (Boolean(myTransactions[i].receiver)){
-        trans.populate("receiver", "name")
+        myTransactions[i].populate("receiver", "name")
       }
     }
     res.status(200).json(myTransactions)
