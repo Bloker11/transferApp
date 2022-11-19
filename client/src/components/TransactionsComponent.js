@@ -3,10 +3,11 @@ import { useEffect } from "react";
 import Alert from "./Alert";
 import Wrapper from "../assets/wrappers/transactionsContainer";
 import PageBtnContainer from "./PageBtnContainer";
+import Transaction from "./Transaction";
 
 const TransactionsComponent = () => {
   const {
-    // getTrans,
+    getTrans,
     trans,
     isLoading,
     page,
@@ -17,9 +18,15 @@ const TransactionsComponent = () => {
     sort,
     numOfPages,
     showAlert,
+    user,
+    token,
+    amount,
+    sender,
+    
   } = useAppContext();
   useEffect(() => {
-    // getTrans();
+
+    getTrans(user, token);
     // eslint-disable-next-line
   }, [page, search, searchStatus, searchType, sort]);
 
@@ -35,10 +42,21 @@ const TransactionsComponent = () => {
     <Wrapper>
       {showAlert && <Alert />}
       <h5>
-        {totalTrans} job{trans.length > 1 && "s"} found
+        {totalTrans} transaction{trans.length > 1 && "s"} found
       </h5>
       <div className="trans">
-      
+        {trans.map((tran, i) => {
+          if(sender[i].startsWith(search)){
+            return (
+              <Transaction
+                key={tran._id}
+                transaction={tran}
+                amount={amount[i]}
+                name={sender[i]}
+              />
+            );
+          }
+        })}
       </div>
       {numOfPages > 1 && <PageBtnContainer />}
     </Wrapper>

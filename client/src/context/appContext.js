@@ -15,6 +15,10 @@ import {
   UPDATE_USER_BEGIN,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_ERROR,
+  GET_TRANS_BEGIN,
+  GET_TRANS_SUCCESS,
+  GET_TRANS_ERROR,
+  HANDLE_CHANGE
 } from "./actions";
 
 const AppContext = React.createContext();
@@ -30,15 +34,24 @@ export const initialState = {
   user: user ? JSON.parse(user) : null,
   token: token,
   showSidebar: false,
-  search: '',
-  transactionType:['send','withdraw','deposit']
+  search: "",
+  transactionType: ["send", "withdraw", "deposit"],
+  sortOptions: ["latest", "oldest", "a-z", "z-a"],
+  sort: "latest",
+  searchType: "all",
+  trans: [],
+  amount: [],
+  totalTrans: 0,
+  sender: [],
+  page: 1
+
 };
 
 axios.defaults.withCredentials = true;
 
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  
+
   const addUserToLocalStorage = ({ user, token }) => {
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", JSON.stringify(token));
@@ -47,6 +60,9 @@ const AppProvider = ({ children }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   };
+    const handleChange = ({ name, value }) => {
+      dispatch({ type: HANDLE_CHANGE, payload: { name, value } });
+    };
   const displayAlert = () => {
     dispatch({ type: DISPLAY_ALERT });
     clearAlert();
@@ -109,20 +125,53 @@ const AppProvider = ({ children }) => {
   };
 
   const updateUser = async (currentUser) => {
-    dispatch({type: UPDATE_USER_BEGIN})
+    dispatch({ type: UPDATE_USER_BEGIN });
     try {
-      const response = await axios.patch("/api/v1/auth/updateUser", currentUser);
+      const response = await axios.patch(
+        "/api/v1/auth/updateUser",
+        currentUser
+      );
       console.log(response);
-      const {user, token} = response.data;
+      const { user, token } = response.data;
       dispatch({
         type: UPDATE_USER_SUCCESS,
         payload: { user, token },
       });
     } catch (err) {
-       dispatch({
-         type: UPDATE_USER_ERROR,
-         payload: { msg: err.response.data.msg },
-       });
+      dispatch({
+        type: UPDATE_USER_ERROR,
+        payload: { msg: err.response.data.msg },
+      });
+    }
+  };
+
+  const getTrans = async (currentUser, token) => {
+    dispatch({ type: GET_TRANS_BEGIN });
+    const parsedToken = JSON.parse(token);
+    try {
+      const response = await axios.get(`/api/v1/trans/m/${currentUser._id}`, {
+        headers: { Authorization: "Bearer " + `${parsedToken}` },
+      });
+      console.log(response.data);
+      let transactions = [];
+      let amounts = [];
+      let names = [];
+
+      for (let i = 0; i < response.data.length; i++) {
+        const { amount, trans } = response.data[i];
+        const { name } = response.data[i].sender;
+        transactions.push(trans);
+        amounts.push(amount);
+        names.push(name)
+        console.log(names);
+      }
+      
+      dispatch({
+        type: GET_TRANS_SUCCESS,
+        payload: { amounts, transactions, names },
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -136,7 +185,9 @@ const AppProvider = ({ children }) => {
         loginUser,
         logoutUser,
         toggleSidebar,
-        updateUser
+        updateUser,
+        getTrans,
+        handleChange
       }}
     >
       {children}

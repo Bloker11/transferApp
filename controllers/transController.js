@@ -133,6 +133,7 @@ const fullSend = async (req, res) => {
 
 const getMyTransactions = async(req, res) => {
   try{  
+    console.log("we've been hit")
     const { id } = req.params
     if(!id){
       return res.status(404).json({ error:"No such user found"})
