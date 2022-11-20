@@ -18,7 +18,10 @@ import {
   GET_TRANS_BEGIN,
   GET_TRANS_SUCCESS,
   GET_TRANS_ERROR,
-  HANDLE_CHANGE
+  HANDLE_CHANGE,
+  MAKE_DEPOSIT_BEGIN,
+  MAKE_DEPOSIT_SUCCESS,
+  MAKE_DEPOSIT_ERROR
 } from "./actions";
 
 const AppContext = React.createContext();
@@ -43,7 +46,9 @@ export const initialState = {
   amount: [],
   totalTrans: 0,
   sender: [],
-  page: 1
+  page: 1,
+  receiver: '',
+  ilosc: 0
 
 };
 
@@ -54,7 +59,7 @@ const AppProvider = ({ children }) => {
 
   const addUserToLocalStorage = ({ user, token }) => {
     localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", JSON.stringify(token));
+    localStorage.setItem("token", token);
   };
   const removeUserFromLocalStorage = () => {
     localStorage.removeItem("user");
@@ -147,10 +152,9 @@ const AppProvider = ({ children }) => {
 
   const getTrans = async (currentUser, token) => {
     dispatch({ type: GET_TRANS_BEGIN });
-    const parsedToken = JSON.parse(token);
     try {
       const response = await axios.get(`/api/v1/trans/m/${currentUser._id}`, {
-        headers: { Authorization: "Bearer " + `${parsedToken}` },
+        headers: { Authorization: "Bearer " + `${token}` },
       });
       console.log(response.data);
       let transactions = [];
@@ -175,6 +179,38 @@ const AppProvider = ({ children }) => {
     }
   };
 
+  const makeDeposit = async (difference, token, userId, tType)=>{
+    dispatch({ type: MAKE_DEPOSIT_BEGIN });
+    try{
+      const response = await axios.post(`/api/v1/trans/deposit`, 
+        {
+          senderId: userId,
+          difference,
+          trans: tType
+        },
+        {
+          headers: { 
+            Authorization: "Bearer " + `${token}` 
+          },
+        }
+      );
+      console.log(response);
+
+      const user = response.data?.updatedUser
+      addUserToLocalStorage({user, token})
+      dispatch({
+        type: MAKE_DEPOSIT_SUCCESS,
+        payload: { user, token },
+      })
+
+    }catch(err){
+      dispatch({
+        type: MAKE_DEPOSIT_ERROR,
+        payload: {msg: err.response.data.msg}
+      })
+    }
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -187,7 +223,8 @@ const AppProvider = ({ children }) => {
         toggleSidebar,
         updateUser,
         getTrans,
-        handleChange
+        handleChange,
+        makeDeposit
       }}
     >
       {children}

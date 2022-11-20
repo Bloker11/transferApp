@@ -4,7 +4,7 @@ import User from "../models/User.js";
 const deposit = async (req, res) => {
   const { difference, senderId, trans } = req.body;
   console.log(req.body);
-  if (!difference) res.status(403).json({ error: "Invalid difference" });
+  if (!difference) res.status(403).json({ error: "Invalid Amount" });
   if (!senderId) res.status(403).json({ error: "Who is making the deposit?" });
   if (!trans)
     res
@@ -22,11 +22,15 @@ const deposit = async (req, res) => {
 
     const newTrans = await Transaction.create({
       sender: daUser._id,
-      difference,
+      amount: difference,
       trans,
     });
-    console.log(newTrans);
-    res.status(201).send(newTrans);
+    const updatedUser = await User.findOne({_id: senderId})
+    if(!updatedUser){
+      throw new Error("Failed to fetch updated user from DB")
+    }
+
+    res.status(201).json({newTrans, updatedUser});
   } catch (error) {
     console.log(error);
     res.status(501).json({ "server error": `${error.message}` });

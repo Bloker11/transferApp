@@ -15,7 +15,10 @@ import {
   GET_TRANS_BEGIN,
   GET_TRANS_SUCCESS,
   GET_TRANS_ERROR,
-  HANDLE_CHANGE
+  HANDLE_CHANGE,
+  MAKE_DEPOSIT_BEGIN,
+  MAKE_DEPOSIT_SUCCESS,
+  MAKE_DEPOSIT_ERROR
 } from "./actions";
 import { initialState } from "./appContext";
 
@@ -143,6 +146,29 @@ const reducer = (state, action) => {
        [action.payload.name]: action.payload.value,
      };
    }
+   if (action.type === MAKE_DEPOSIT_BEGIN) {
+      return { ...state, isLoading: true };
+    }
+    if (action.type === MAKE_DEPOSIT_SUCCESS) {
+      return {
+        ...state,
+        isLoading: false,
+        user: action.payload.user,
+        token: action.payload.token,
+        showAlert: true,
+        alertText: "Your deposit was completed successfully",
+        alertType: "success",
+      };
+    }
+    if(action.type === MAKE_DEPOSIT_ERROR){
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertText: action.payload.msg,
+        alertType: "danger",
+      };
+    }
 
 
   throw new Error(`no such action :${action.type}`);
