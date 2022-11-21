@@ -9,7 +9,8 @@ const SendMoney = () => {
     receiver,
     sendMoney,
     token,
-    displayAlert } = useAppContext()
+    displayAlert,
+    showAlert } = useAppContext()
 
     const [recipient, setRecipient ] = useState(receiver)
     const [difference, setDifference ] = useState(ilosc)
@@ -28,7 +29,7 @@ const SendMoney = () => {
 
     return (
     <form className="form" onSubmit={handleSubmit}>
-          
+          {showAlert && <Alert />}
           <h3>Send money</h3>
           <div className="form-center">
             <FormRow

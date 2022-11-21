@@ -47,25 +47,31 @@ const withdraw = async (req, res) => {
         .json({ error: "withdrawal difference must be included" });
     }
 
+    const user = await User.findOne(
+      {_id: userId}
+      // {'$inc':{wallet: -difference}}, 
+      // {new:true}
+    );
+    console.log(user.wallet, user._id)
+    if(user.wallet <= 0 || user.wallet< difference){
+      return res.status(400).json({ error:"user balance too low to make withdrawal"})
+    }
+    user.wallet -= +difference
+    user.save()
+
     const withdrawal = await Transaction.create({
       sender: userId,
       amount: difference,
       trans: "withdrawal",
-    });
-    const user = await User.findOneAndUpdate(
-      {_id: userId},
-      {'$inc':{wallet: -difference}}, 
-      {new:true}
-    );
-    user.wallet -= difference;
-    await user.save();
+    })
+;
+    
 
-    const updatedTrans = await Transaction.findOne({ _id: withdrawal._id }).populate(
+    const updatedTrans = await withdrawal.populate(
       "sender",
       "name"
     );
-
-    res.status(201).json({updatedTrans, user});9kq
+    res.status(201).json({updatedTrans, user});
   } catch (e) {
     console.log(e);
   }
@@ -89,25 +95,28 @@ const fullSend = async (req, res) => {
 
     //getting the sender and receiver from db and updating their wallet
     //balances
-    const theSender = await User.findOneAndUpdate(
-      {_id: userId},
-      {'$inc':{wallet: -difference}}, 
-      {new:true}
-    )
+    // const theSender = await User.findOneAndUpdate(
+    //   {_id: userId},
+    //   {'$inc':{wallet: -difference}}, 
+    //   {new:true}
+    // )
 
-    // const theSender = await User.findOne(
-    //   { _id: userId }
-    // );
-    // theSender.wallet -= +difference
-    // await theSender.save()
+    const theSender = await User.findOne(
+      { _id: userId }
+    );
+    if(theSender.wallet <= 0 || theSender.wallet< difference){
+      return res.status(400).json({ error:"sender balance too low to send money"})
+    }
+    theSender.wallet -= +difference
+    await theSender.save()
 
 
-    // const theReceiver = await User.findOne(
-    //   { email: receiver }
-    // );
-    // theReceiver.wallet += +difference
-    // await theReceiver.save()
-    const theReceiver = await User.findOneAndUpdate({email: receiver},{'$inc':{wallet: difference}}, {new:true})
+    const theReceiver = await User.findOne(
+      { email: receiver }
+    );
+    theReceiver.wallet += +difference
+    await theReceiver.save()
+    // const theReceiver = await User.findOneAndUpdate({email: receiver},{'$inc':{wallet: difference}}, {new:true})
       
     if (!theReceiver) {
       return res

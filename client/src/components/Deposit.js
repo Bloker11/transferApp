@@ -13,7 +13,8 @@ const Deposit = () => {
     makeDeposit,
     token,
     user, 
-    displayAlert } = useAppContext()
+    displayAlert,
+    showAlert } = useAppContext()
 
 
   const [ difference, setDifference ] = useState(ilosc)
@@ -32,7 +33,7 @@ const Deposit = () => {
   
   return (
     <form className="form" onSubmit={handleSubmit}>
-          
+          {showAlert && <Alert />}
           <h3>Deposit </h3>
           <div className="form-center">
             <FormRow

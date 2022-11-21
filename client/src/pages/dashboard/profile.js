@@ -48,12 +48,12 @@ const Profile = () => {
             handleChange={(e) => setEmail(e.target.value)}
           />
 
-          <FormRow
+          {/* <FormRow
             type="number"
             name="wallet"
             value={wallet}
             handleChange={(e) => setWallet(e.target.value)}
-          />
+          /> */}
           <button className="btn btn-block" type="submit" disabled={isLoading}>
             {isLoading ? "Please Wait..." : "save changes"}
           </button>

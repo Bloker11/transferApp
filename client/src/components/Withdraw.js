@@ -10,7 +10,8 @@ const Withdraw = () => {
     token,
     ilosc,
     displayAlert,
-    withdraw
+    withdraw,
+    showAlert
   
   } = useAppContext()
 
@@ -28,7 +29,7 @@ const Withdraw = () => {
   
   return (
     <form className="form" onSubmit={handleChange}>
-          {" "}
+          {showAlert && <Alert />}
           <h3>Withdraw</h3>
           <div className="form-center">
             <FormRow

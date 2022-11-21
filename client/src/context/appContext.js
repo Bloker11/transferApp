@@ -91,7 +91,6 @@ const AppProvider = ({ children }) => {
     dispatch({ type: REGISTER_USER_BEGIN });
     try {
       const response = await axios.post("/api/v1/auth/register", currentUser);
-      console.log(response);
       const { user, token } = response.data;
       addUserToLocalStorage({ user, token });
       dispatch({
@@ -102,7 +101,6 @@ const AppProvider = ({ children }) => {
         },
       });
     } catch (err) {
-      console.log(err);
       dispatch({
         REGISTER_USER_ERROR,
         payload: { msg: err.response.data.msg },
@@ -115,7 +113,6 @@ const AppProvider = ({ children }) => {
     dispatch({ type: LOGIN_USER_BEGIN });
     try {
       const response = await axios.post("/api/v1/auth/login", currentUser);
-      console.log(response);
       const { user, token } = response.data;
       addUserToLocalStorage({ user, token });
       dispatch({
@@ -143,18 +140,20 @@ const AppProvider = ({ children }) => {
         "/api/v1/auth/updateUser",
         currentUser
       );
-      console.log(response);
       const { user, token } = response.data;
       dispatch({
         type: UPDATE_USER_SUCCESS,
         payload: { user, token },
       });
+
     } catch (err) {
       dispatch({
         type: UPDATE_USER_ERROR,
         payload: { msg: err.response.data.msg },
       });
     }
+    clearAlert();
+
   };
 
   const getTrans = async (currentUser, token) => {
@@ -163,7 +162,6 @@ const AppProvider = ({ children }) => {
       const response = await axios.get(`/api/v1/trans/m/${currentUser._id}`, {
         headers: { Authorization: "Bearer " + `${token}` },
       });
-      console.log(response.data);
       let transactions = [];
       let amounts = [];
       let names = [];
@@ -174,7 +172,6 @@ const AppProvider = ({ children }) => {
         transactions.push(trans);
         amounts.push(amount);
         names.push(name)
-        // console.log(names);
       }
       
       dispatch({
@@ -184,6 +181,8 @@ const AppProvider = ({ children }) => {
     } catch (err) {
       console.log(err);
     }
+    clearAlert();
+
   };
 
   const makeDeposit = async (difference, token, userId, tType)=>{
@@ -201,7 +200,6 @@ const AppProvider = ({ children }) => {
           },
         }
       );
-      console.log(response);
 
       const user = response.data?.updatedUser
       addUserToLocalStorage({user, token})
@@ -216,6 +214,8 @@ const AppProvider = ({ children }) => {
         payload: {msg: err.response.data.msg}
       })
     }
+    clearAlert();
+
   }
 
   const sendMoney = async (difference, token, recipient)=>{
@@ -232,7 +232,6 @@ const AppProvider = ({ children }) => {
           },
         }
       );
-      console.log(response);
 
       const user = response.data?.initiator
       addUserToLocalStorage({user, token})
@@ -246,8 +245,9 @@ const AppProvider = ({ children }) => {
         type: SEND_MONEY_ERROR,
         payload: {msg: err.response.data.msg}
       })
-      console.log('error')
     }
+    clearAlert();
+
   }
 
   const withdraw = async (difference, token )=>{
@@ -260,7 +260,6 @@ const AppProvider = ({ children }) => {
           },
         }
       );
-      console.log(response);
 
       const user = response.data?.user
       addUserToLocalStorage({user, token})
@@ -274,8 +273,9 @@ const AppProvider = ({ children }) => {
         type: WITHDRAW_ERROR,
         payload: {msg: err.response.data.msg}
       })
-      console.log('error')
     }
+    clearAlert();
+
   }
 
   return (
