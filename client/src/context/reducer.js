@@ -18,7 +18,14 @@ import {
   HANDLE_CHANGE,
   MAKE_DEPOSIT_BEGIN,
   MAKE_DEPOSIT_SUCCESS,
-  MAKE_DEPOSIT_ERROR
+  MAKE_DEPOSIT_ERROR,
+  SEND_MONEY_BEGIN,
+  SEND_MONEY_SUCCESS,
+  SEND_MONEY_ERROR,
+  WITHDRAW_BEGIN,
+  WITHDRAW_SUCCESS,
+  WITHDRAW_ERROR
+
 } from "./actions";
 import { initialState } from "./appContext";
 
@@ -169,7 +176,55 @@ const reducer = (state, action) => {
         alertType: "danger",
       };
     }
+    if (action.type === SEND_MONEY_BEGIN) {
+      return { ...state, isLoading: true };
+    }
+    if (action.type === SEND_MONEY_SUCCESS) {
+      return {
+        ...state,
+        isLoading: false,
+        user: action.payload.user,
+        token: action.payload.token,
+        showAlert: true,
+        alertText: "Money was sent successfully",
+        alertType: "success",
+      };
+    }
 
+    if(action.type === SEND_MONEY_ERROR){
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertText: action.payload.msg,
+        alertType: "danger",
+      };
+    }
+
+    if (action.type === WITHDRAW_BEGIN) {
+      return { ...state, isLoading: true };
+    }
+    if (action.type === WITHDRAW_SUCCESS) {
+      return {
+        ...state,
+        isLoading: false,
+        user: action.payload.user,
+        token: action.payload.token,
+        showAlert: true,
+        alertText: "Withdrawal completed successfully",
+        alertType: "success",
+      };
+    }
+
+    if(action.type === WITHDRAW_ERROR){
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertText: action.payload.msg,
+        alertType: "danger",
+      };
+    }
 
   throw new Error(`no such action :${action.type}`);
 };

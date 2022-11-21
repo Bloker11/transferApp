@@ -32,7 +32,7 @@ const TransactionSchema = new mongoose.Schema({
     required: [ true, 'is it deposit or withdrawal? | send or receive']
   }
   
-});
+}, { minimize: false, timestamps: true });
 
 TransactionSchema.methods.toJSON = function(){
   const Transaction = this;

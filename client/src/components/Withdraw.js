@@ -1,10 +1,33 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FormRow, Alert } from ".";
+import { useAppContext } from '../context/appContext'
+
 
 
 const Withdraw = () => {
+
+  const { 
+    token,
+    ilosc,
+    displayAlert,
+    withdraw
+  
+  } = useAppContext()
+
+  const [difference, setDifference ] = useState(ilosc)
+
+  const handleChange = (e)=>{
+    e.preventDefault();
+    if (!difference || !token ) {
+      displayAlert();
+      return;
+    }
+    withdraw( difference, token )
+    setDifference(0)
+  }
+  
   return (
-    <form className="form">
+    <form className="form" onSubmit={handleChange}>
           {" "}
           <h3>Withdraw</h3>
           <div className="form-center">
@@ -12,12 +35,10 @@ const Withdraw = () => {
               labelText="How Much?"
               type="text"
               name="amount"
+              value={difference}
+              handleChange={e => setDifference(e.target.value)}
             />
-            <FormRow
-              labelText="Withdraw"
-              type="text"
-              name="transaction type"
-            />
+            
 
             <button className="btn btn-block" type="submit">
               {" "}

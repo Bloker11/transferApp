@@ -39,6 +39,7 @@ const Deposit = () => {
               labelText="How Much?"
               type="text"
               name="amount"
+              value={difference}
               handleChange={(e) =>setDifference(e.target.value)}
             />
             

@@ -21,7 +21,13 @@ import {
   HANDLE_CHANGE,
   MAKE_DEPOSIT_BEGIN,
   MAKE_DEPOSIT_SUCCESS,
-  MAKE_DEPOSIT_ERROR
+  MAKE_DEPOSIT_ERROR,
+  SEND_MONEY_BEGIN,
+  SEND_MONEY_SUCCESS,
+  SEND_MONEY_ERROR,
+  WITHDRAW_BEGIN,
+  WITHDRAW_SUCCESS,
+  WITHDRAW_ERROR
 } from "./actions";
 
 const AppContext = React.createContext();
@@ -48,7 +54,8 @@ export const initialState = {
   sender: [],
   page: 1,
   receiver: '',
-  ilosc: 0
+  ilosc: 0,
+  receiver: ''
 
 };
 
@@ -167,7 +174,7 @@ const AppProvider = ({ children }) => {
         transactions.push(trans);
         amounts.push(amount);
         names.push(name)
-        console.log(names);
+        // console.log(names);
       }
       
       dispatch({
@@ -211,6 +218,66 @@ const AppProvider = ({ children }) => {
     }
   }
 
+  const sendMoney = async (difference, token, recipient)=>{
+    dispatch({type: SEND_MONEY_BEGIN})
+    try{
+      const response = await axios.post(`/api/v1/trans/send`, 
+        {
+          receiver: recipient,
+          difference,
+        },
+        {
+          headers: { 
+            Authorization: "Bearer " + `${token}` 
+          },
+        }
+      );
+      console.log(response);
+
+      const user = response.data?.initiator
+      addUserToLocalStorage({user, token})
+      dispatch({
+        type: SEND_MONEY_SUCCESS,
+        payload: { user, token },
+      })
+
+    }catch(err){
+      dispatch({
+        type: SEND_MONEY_ERROR,
+        payload: {msg: err.response.data.msg}
+      })
+      console.log('error')
+    }
+  }
+
+  const withdraw = async (difference, token )=>{
+    dispatch({type: WITHDRAW_BEGIN})
+    try{
+      const response = await axios.get(`/api/v1/trans/withdrawal/${difference}`, 
+        {
+          headers: { 
+            Authorization: "Bearer " + `${token}` 
+          },
+        }
+      );
+      console.log(response);
+
+      const user = response.data?.user
+      addUserToLocalStorage({user, token})
+      dispatch({
+        type: WITHDRAW_SUCCESS,
+        payload: { user, token },
+      })
+
+    }catch(err){
+      dispatch({
+        type: WITHDRAW_ERROR,
+        payload: {msg: err.response.data.msg}
+      })
+      console.log('error')
+    }
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -224,7 +291,9 @@ const AppProvider = ({ children }) => {
         updateUser,
         getTrans,
         handleChange,
-        makeDeposit
+        makeDeposit,
+        sendMoney,
+        withdraw
       }}
     >
       {children}

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.route('/deposit')
     .post(deposit)
-router.route('/withdrawal/:amount')
+router.route('/withdrawal/:difference')
     .get(withdraw)
 router.route('/send')
     .post(fullSend)

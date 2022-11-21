@@ -36,7 +36,7 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 500
   }
-});
+}, {minimize: false, timestamps: true});
 
 UserSchema.pre("save", async function (next) {
   const user = this;
