@@ -157,12 +157,23 @@ const getMyTransactions = async(req, res) => {
     const myTransactions = await Transaction.find({sender: id})
     .sort({ _id: -1 })
     .populate("sender", "name")
-    for(let i=0; i<myTransactions.length; i++){
-      if (Boolean(myTransactions[i].receiver)){
-        myTransactions[i].populate("receiver", "name")
+    const receivedTransactions = await Transaction.find({receiver: id})
+    .sort({ _id: -1 })
+    .populate("sender", "name")
+
+    // const mtto = myTransactions.toObject()
+    // const rtto = receivedTransactions.toObject()
+
+    let joinedTransactions = [...myTransactions, ...receivedTransactions]
+
+    joinedTransactions = joinedTransactions.sort((a, b)=> a._id.toString().localeCompare(b._id.toString()))
+
+    for(let i=0; i<joinedTransactions.length; i++){
+      if (Boolean(joinedTransactions[i].receiver)){
+        joinedTransactions[i].populate("receiver", "name")
       }
     }
-    res.status(200).json(myTransactions)
+    res.status(200).json(joinedTransactions) 
   }catch(e){
     console.log(e)
     res.status(500).json({ error: `server error: ${e.code}`})
