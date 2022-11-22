@@ -140,7 +140,7 @@ const fullSend = async (req, res) => {
       .populate("sender", "email")
       .populate("receiver", "email");
 
-    res.status(201).json({transaction: returnTransaction, initiator: theSender});
+    res.status(201).json({transaction: returnTransaction, initiator: theSender, receiver: theReceiver});
   } catch (e) {
     console.log(e);
   }
