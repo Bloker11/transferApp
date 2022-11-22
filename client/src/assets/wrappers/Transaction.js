@@ -36,7 +36,13 @@ const Wrapper = styled.article`
     p {
       margin: 0;
       text-transform: capitalize;
-      color: var(--grey-400);
+      color: green;
+      letter-spacing: var(--letterSpacing);
+    }
+    span {
+      margin: 0;
+      text-transform: capitalize;
+      color: red;
       letter-spacing: var(--letterSpacing);
     }
   }

@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
+import { useAppContext } from "../../context/appContext";
 
-const stats = () => {
-  return (
-    <div>stats</div>
-  )
-}
+const Stats = () => {
+  const { user } = useAppContext();
+  return <div>{user.wallet}</div>;
+};
 
-export default stats
+export default Stats;

@@ -22,6 +22,8 @@ const TransactionsComponent = () => {
     token,
     amount,
     sender,
+    searchAmount,
+    time
     
   } = useAppContext();
   useEffect(() => {
@@ -46,7 +48,19 @@ const TransactionsComponent = () => {
       </h5>
       <div className="trans">
         {trans.map((tran, i) => {
-          if(sender[i].startsWith(search)){
+          if (sender[i].startsWith(search) && searchAmount === "") {
+            return (
+              <Transaction
+                key={tran._id}
+                transaction={tran}
+                amount={amount[i]}
+                name={sender[i]}
+                time={time[i]}
+              />
+            );
+          }
+          if(sender[i].startsWith(search) && amount[i] === parseInt(searchAmount)){
+            
             return (
               <Transaction
                 key={tran._id}
@@ -56,6 +70,7 @@ const TransactionsComponent = () => {
               />
             );
           }
+          
         })}
       </div>
       {numOfPages > 1 && <PageBtnContainer />}

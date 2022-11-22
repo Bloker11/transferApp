@@ -4,6 +4,7 @@ import Wrapper from "../assets/wrappers/SearchContainer";
 import { useState, useMemo } from "react";
 const SearchContainer = () => {
   const [localSearch, setLocalSearch] = useState("");
+  const [localAmount, setLocalAmount] = useState();
   const {
     isLoading,
     searchType,
@@ -12,25 +13,29 @@ const SearchContainer = () => {
     handleChange,
     clearFilters,
     transactionType,
+    amount,
     
   } = useAppContext();
   const handleSearch = (e) => {
     handleChange({ name: e.target.name, value: e.target.value });
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    clearFilters();
-  };
   const debounce = () => {
     let timeoutID;
     return (e) => {
+      if(e.target.name === "search"){
       setLocalSearch(e.target.value);
+      }
+      if (e.target.name === "searchAmount") {
+        setLocalAmount(e.target.value);
+      }
+      
       clearTimeout(timeoutID);
       timeoutID = setTimeout(() => {
         handleChange({ name: e.target.name, value: e.target.value });
       }, 1000);
     };
   };
+  
   const optimizedDebounce = useMemo(() => debounce(), []);
   return (
     <Wrapper>
@@ -45,28 +50,12 @@ const SearchContainer = () => {
             value={localSearch}
             handleChange={optimizedDebounce}
           />
-          {/* search by type */}
-          <FormRowSelect
-            labelText="type"
-            name="searchType"
-            value={searchType}
-            handleChange={handleSearch}
-            list={["all", ...transactionType]}
+          <FormRow
+            type="amount"
+            name="searchAmount"
+            value={localAmount}
+            handleChange={optimizedDebounce}
           />
-          {/* sort */}
-          <FormRowSelect
-            name="sort"
-            value={sort}
-            handleChange={handleSearch}
-            list={sortOptions}
-          />
-          <button
-            className="btn btn-block btn-danger"
-            disabled={isLoading}
-            onClick={handleSubmit}
-          >
-            clear filters
-          </button>
         </div>
       </form>
     </Wrapper>

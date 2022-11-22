@@ -55,7 +55,9 @@ export const initialState = {
   page: 1,
   receiver: '',
   ilosc: 0,
-  receiver: ''
+  receiver: '',
+  searchAmount: "",
+  time:[]
 
 };
 
@@ -165,18 +167,21 @@ const AppProvider = ({ children }) => {
       let transactions = [];
       let amounts = [];
       let names = [];
+      let time = [];
 
       for (let i = 0; i < response.data.length; i++) {
-        const { amount, trans } = response.data[i];
+        const { amount, trans, createdAt } = response.data[i];
         const { name } = response.data[i].sender;
+        time.push(createdAt.slice(0, 10));
         transactions.push(trans);
         amounts.push(amount);
         names.push(name)
+        
       }
       
       dispatch({
         type: GET_TRANS_SUCCESS,
-        payload: { amounts, transactions, names },
+        payload: { amounts, transactions, names, time },
       });
     } catch (err) {
       console.log(err);

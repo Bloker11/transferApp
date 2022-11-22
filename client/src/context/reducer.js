@@ -143,7 +143,8 @@ const reducer = (state, action) => {
       amount: action.payload.amounts,
       isLoading: false,
       totalTrans: action.payload.transactions.length,
-      sender: action.payload.names
+      sender: action.payload.names,
+      time: action.payload.time
     };
    }
    if (action.type === HANDLE_CHANGE) {
