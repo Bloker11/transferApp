@@ -2,13 +2,14 @@ import moment from "moment";
 import { AiOutlineUser } from "react-icons/ai";
 import { FaCalendarAlt, FaLocationArrow } from "react-icons/fa";
 import Wrapper from "../assets/wrappers/Transaction";
+import { useAppContext } from "../context/appContext";
 
 import TransactionInfo from "./TransactionInfo";
 
 const Transaction = ({
   amount, transaction, name, time
 }) => {
-    
+    const {user} = useAppContext()
 
 
   return (
@@ -17,7 +18,7 @@ const Transaction = ({
         <div className="main-icon">{transaction.charAt(0)}</div>
         <div className="info">
           <h5>{transaction}</h5>
-          {transaction === "deposit" ? (
+          {transaction === "deposit" || name !== user.name ? (
             <p>+${amount}</p>
           ) : (
             <span>-${amount}</span>

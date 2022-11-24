@@ -48,7 +48,10 @@ const TransactionsComponent = () => {
       </h5>
       <div className="trans">
         {trans.map((tran, i) => {
-          if (sender[i].startsWith(search) && searchAmount === "") {
+          if (
+            sender[i].toLowerCase().startsWith(search.toLowerCase()) &&
+            searchAmount === ""
+          ) {
             return (
               <Transaction
                 key={tran._id}
@@ -59,14 +62,17 @@ const TransactionsComponent = () => {
               />
             );
           }
-          if(sender[i].startsWith(search) && amount[i] === parseInt(searchAmount)){
-            
+          if (
+            sender[i].toLowerCase().startsWith(search.toLowerCase()) &&
+            amount[i] === parseInt(searchAmount)
+          ) {
             return (
               <Transaction
                 key={tran._id}
                 transaction={tran}
                 amount={amount[i]}
                 name={sender[i]}
+                time={time[i]}
               />
             );
           }

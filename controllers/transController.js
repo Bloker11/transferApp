@@ -132,7 +132,7 @@ const fullSend = async (req, res) => {
       sender: userId,
       amount: difference,
       receiver: theReceiver._id,
-      trans: "send",
+      trans: "transfer",
     });
 
     //get populated transaction for frontenf

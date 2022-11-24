@@ -28,7 +28,7 @@ const TransactionSchema = new mongoose.Schema({
   },
   trans:{
     type: String,
-    enum: ['deposit', 'withdrawal', 'send', 'receive'],
+    enum: ['deposit', 'withdrawal', 'send', 'receive', "transfer"],
     required: [ true, 'is it deposit or withdrawal? | send or receive']
   }
   

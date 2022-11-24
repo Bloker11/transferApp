@@ -9,6 +9,10 @@ const Wrapper = styled.section`
 
   row-gap: 2rem;
 
+  h1{
+    color:green;
+  }
+
   @media (min-width: 768px) { 
 
     grid-template-columns: 1fr 1fr;

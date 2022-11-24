@@ -7,6 +7,7 @@ import PageBtnContainer from "./PageBtnContainer";
 import TransactionsComponent from "./TransactionsComponent"
 import FormRowSelect from "./FormRow";
 import SearchContainer from "./SearchContainer";
+import ChartsContainer from "./ChartsContainer";
 export {
   FormRow,
   Alert,
@@ -16,5 +17,6 @@ export {
   PageBtnContainer,
   TransactionsComponent,
   FormRowSelect,
-  SearchContainer
+  SearchContainer,
+  ChartsContainer
 };
